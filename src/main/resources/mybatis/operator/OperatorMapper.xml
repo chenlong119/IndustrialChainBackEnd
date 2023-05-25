@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.operator.mapper.OperatorMapper">
+    
+    <resultMap type="Operator" id="OperatorResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="tid"    column="tid"    />
+    </resultMap>
+
+    <sql id="selectOperatorVo">
+        select id, name, tid from operator
+    </sql>
+
+    <select id="selectOperatorList" parameterType="Operator" resultMap="OperatorResult">
+        <include refid="selectOperatorVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="tid != null "> and tid = #{tid}</if>
+        </where>
+    </select>
+    
+    <select id="selectOperatorById" parameterType="Long" resultMap="OperatorResult">
+        <include refid="selectOperatorVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertOperator" parameterType="Operator" useGeneratedKeys="true" keyProperty="id">
+        insert into operator
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="tid != null">tid,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="tid != null">#{tid},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOperator" parameterType="Operator">
+        update operator
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="tid != null">tid = #{tid},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOperatorById" parameterType="Long">
+        delete from operator where id = #{id}
+    </delete>
+
+    <delete id="deleteOperatorByIds" parameterType="String">
+        delete from operator where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

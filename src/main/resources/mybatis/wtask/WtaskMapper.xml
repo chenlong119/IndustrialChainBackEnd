@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.wtask.mapper.WtaskMapper">
+    
+    <resultMap type="Wtask" id="WtaskResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="type"    column="type"    />
+        <result property="ddl"    column="ddl"    />
+        <result property="arrival"    column="arrival"    />
+        <result property="duration"    column="duration"    />
+        <result property="value"    column="value"    />
+        <result property="priority"    column="priority"    />
+        <result property="waiting"    column="waiting"    />
+    </resultMap>
+
+    <sql id="selectWtaskVo">
+        select id, name, type, ddl, arrival, duration, value, priority, waiting from wtask
+    </sql>
+
+    <select id="selectWtaskList" parameterType="Wtask" resultMap="WtaskResult">
+        <include refid="selectWtaskVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="ddl != null "> and ddl = #{ddl}</if>
+            <if test="arrival != null "> and arrival = #{arrival}</if>
+            <if test="duration != null "> and duration = #{duration}</if>
+            <if test="value != null "> and value = #{value}</if>
+            <if test="priority != null "> and priority = #{priority}</if>
+            <if test="waiting != null "> and waiting = #{waiting}</if>
+        </where>
+    </select>
+    
+    <select id="selectWtaskById" parameterType="Long" resultMap="WtaskResult">
+        <include refid="selectWtaskVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertWtask" parameterType="Wtask" useGeneratedKeys="true" keyProperty="id">
+        insert into wtask
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="type != null">type,</if>
+            <if test="ddl != null">ddl,</if>
+            <if test="arrival != null">arrival,</if>
+            <if test="duration != null">duration,</if>
+            <if test="value != null">value,</if>
+            <if test="priority != null">priority,</if>
+            <if test="waiting != null">waiting,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="type != null">#{type},</if>
+            <if test="ddl != null">#{ddl},</if>
+            <if test="arrival != null">#{arrival},</if>
+            <if test="duration != null">#{duration},</if>
+            <if test="value != null">#{value},</if>
+            <if test="priority != null">#{priority},</if>
+            <if test="waiting != null">#{waiting},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWtask" parameterType="Wtask">
+        update wtask
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="ddl != null">ddl = #{ddl},</if>
+            <if test="arrival != null">arrival = #{arrival},</if>
+            <if test="duration != null">duration = #{duration},</if>
+            <if test="value != null">value = #{value},</if>
+            <if test="priority != null">priority = #{priority},</if>
+            <if test="waiting != null">waiting = #{waiting},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWtaskById" parameterType="Long">
+        delete from wtask where id = #{id}
+    </delete>
+
+    <delete id="deleteWtaskByIds" parameterType="String">
+        delete from wtask where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

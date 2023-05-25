@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.coalition.mapper.EnterpriseMapper">
+    
+    <resultMap type="Enterprise" id="EnterpriseResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="city"    column="city"    />
+        <result property="chain"    column="chain"    />
+        <result property="satisfy"    column="satisfy"    />
+        <result property="cnum"    column="cnum"    />
+    </resultMap>
+
+    <sql id="selectEnterpriseVo">
+        select id, name, city, chain, satisfy, cnum from enterprise
+    </sql>
+
+    <select id="selectEnterpriseList" parameterType="Enterprise" resultMap="EnterpriseResult">
+        <include refid="selectEnterpriseVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="city != null  and city != ''"> and city = #{city}</if>
+            <if test="chain != null  and chain != ''"> and chain = #{chain}</if>
+            <if test="satisfy != null "> and satisfy = #{satisfy}</if>
+            <if test="cnum != null "> and cnum = #{cnum}</if>
+        </where>
+    </select>
+    
+    <select id="selectEnterpriseById" parameterType="Long" resultMap="EnterpriseResult">
+        <include refid="selectEnterpriseVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertEnterprise" parameterType="Enterprise" useGeneratedKeys="true" keyProperty="id">
+        insert into enterprise
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="city != null and city != ''">city,</if>
+            <if test="chain != null and chain != ''">chain,</if>
+            <if test="satisfy != null">satisfy,</if>
+            <if test="cnum != null">cnum,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="city != null and city != ''">#{city},</if>
+            <if test="chain != null and chain != ''">#{chain},</if>
+            <if test="satisfy != null">#{satisfy},</if>
+            <if test="cnum != null">#{cnum},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEnterprise" parameterType="Enterprise">
+        update enterprise
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="city != null and city != ''">city = #{city},</if>
+            <if test="chain != null and chain != ''">chain = #{chain},</if>
+            <if test="satisfy != null">satisfy = #{satisfy},</if>
+            <if test="cnum != null">cnum = #{cnum},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEnterpriseById" parameterType="Long">
+        delete from enterprise where id = #{id}
+    </delete>
+
+    <delete id="deleteEnterpriseByIds" parameterType="String">
+        delete from enterprise where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
